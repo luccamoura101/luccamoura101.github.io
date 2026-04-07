@@ -3,444 +3,853 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>lucca@dev:~</title>
+  <title>Lucca — Developer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
-    :root {
-      --bg:      #0a0a0a;
-      --surface: #111111;
-      --border:  #1e1e1e;
-      --gold:    #ffd21e;
-      --gold2:   #ffb800;
-      --dim:     #555;
-      --muted:   #888;
-      --text:    #d4d0c8;
-      --green:   #4ec94e;
-      --red:     #e05454;
-      --blue:    #5b9cf6;
-    }
-
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    html, body {
-      height: 100%;
+    :root {
+      --bg:     #000;
+      --text:   #fff;
+      --muted:  #555;
+      --dim:    #333;
+      --rule:   #1c1c1c;
+      --gold:   #ffd21e;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 14px;
-      line-height: 1.6;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+      align-items: start;
+      padding: 18px 28px 0;
+      background: var(--bg);
+      border-bottom: 1px solid var(--rule);
+      padding-bottom: 14px;
+    }
+
+    .nav-name {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      line-height: 1.3;
+    }
+
+    .nav-name .sub {
+      display: block;
+      color: var(--muted);
+      font-weight: 400;
+      text-transform: none;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .nav-name .sub:hover { color: var(--text); }
+
+    .nav-col {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .nav-col-title {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text);
+      letter-spacing: 0.02em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--muted);
+      display: inline-block;
+      flex-shrink: 0;
+    }
+    .nav-dot.active { background: var(--gold); }
+
+    .nav-col-title:hover { color: var(--muted); cursor: pointer; }
+
+    .nav-sub {
+      color: var(--muted);
+      font-size: 12px;
+      padding-left: 11px;
+      cursor: pointer;
+      transition: color .15s;
+    }
+    .nav-sub:hover { color: var(--text); }
+
+    .nav-lang {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 2px;
+    }
+
+    .lang-row { display: flex; gap: 12px; }
+
+    .lang-btn {
+      background: none; border: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px; color: var(--muted);
+      cursor: pointer; padding: 0;
+      transition: color .15s;
+    }
+    .lang-btn.active { color: var(--text); }
+    .lang-btn:hover { color: var(--text); }
+
+    /* ── HERO ── */
+    #hero {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding-top: 70px;
       overflow: hidden;
     }
 
-    .window {
+    .marquee-wrap {
+      flex: 1;
       display: flex;
       flex-direction: column;
-      width: 100vw;
-      height: 100vh;
+      justify-content: center;
+      overflow: hidden;
     }
 
-    /* ── TITLEBAR ── */
-    .titlebar {
-      flex-shrink: 0;
-      background: #161616;
-      border-bottom: 1px solid var(--border);
+    .marquee-row {
       display: flex;
-      align-items: center;
-      padding: 0 16px;
-      height: 42px;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .marquee-row:nth-child(2) .marquee-track { animation-direction: reverse; }
+
+    .marquee-track {
+      display: flex;
+      animation: marquee 30s linear infinite;
+      flex-shrink: 0;
+    }
+
+    .marquee-text {
+      font-size: clamp(80px, 13vw, 180px);
+      font-weight: 500;
+      color: #1a1a1a;
+      letter-spacing: -0.02em;
+      line-height: 1;
+      text-transform: uppercase;
+      padding-right: 40px;
       user-select: none;
     }
 
-    .traffic-lights { display: flex; gap: 8px; margin-right: 16px; }
-    .tl {
-      width: 12px; height: 12px; border-radius: 50%;
-      cursor: default;
-    }
-    .tl.red    { background: #ff5f57; }
-    .tl.yellow { background: #ffbd2e; }
-    .tl.green  { background: #28c840; }
-
-    .titlebar-title {
-      flex: 1; text-align: center;
-      font-size: 12px; color: var(--dim); letter-spacing: 0.05em;
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
     }
 
-    .titlebar-lang { display: flex; gap: 4px; }
-    .tl-btn {
-      background: none; border: 1px solid var(--border);
-      color: var(--dim); font-family: 'JetBrains Mono', monospace;
-      font-size: 11px; padding: 2px 8px; border-radius: 3px;
-      cursor: pointer; transition: all .2s;
+    .hero-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding: 20px 28px 24px;
+      border-top: 1px solid var(--rule);
     }
-    .tl-btn.active { border-color: var(--gold); color: var(--gold); }
-    .tl-btn:hover:not(.active) { color: var(--text); border-color: #333; }
 
-    /* ── TERMINAL OUTPUT ── */
-    .terminal {
-      flex: 1;
-      overflow-y: auto;
-      padding: 24px 32px;
-      scroll-behavior: smooth;
+    .hero-avail {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
     }
-    .terminal::-webkit-scrollbar { width: 6px; }
-    .terminal::-webkit-scrollbar-track { background: transparent; }
-    .terminal::-webkit-scrollbar-thumb { background: #222; border-radius: 3px; }
 
-    .line { margin-bottom: 2px; white-space: pre-wrap; word-break: break-word; }
-    .gap    { margin-bottom: 14px; }
-    .gap-sm { margin-bottom: 6px; }
+    .hero-avail-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+    }
 
-    .c-gold  { color: var(--gold); }
-    .c-green { color: var(--green); }
-    .c-red   { color: var(--red); }
-    .c-blue  { color: var(--blue); }
-    .c-muted { color: var(--muted); }
-    .c-dim   { color: var(--dim); }
-    .bold    { font-weight: 700; }
-
-    .ascii {
-      color: var(--gold);
+    .hero-avail-val {
       font-size: 12px;
-      line-height: 1.25;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .green-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: #2ecc71;
+      display: inline-block;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(46,204,113,.4); }
+      50%      { box-shadow: 0 0 0 5px rgba(46,204,113,0); }
+    }
+
+    .hero-loc {
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .hero-loc-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+    }
+
+    .hero-loc-val { font-size: 12px; }
+
+    /* ── MAIN LAYOUT ── */
+    main { padding: 0 28px; }
+
+    .section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 80px;
+      padding: 80px 0;
+      border-top: 1px solid var(--rule);
+    }
+
+    .section-left {}
+
+    .section-heading {
+      font-size: clamp(36px, 5vw, 60px);
+      font-weight: 400;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+
+    .section-sub {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 300px;
+    }
+
+    .section-right {}
+
+    /* ── ABOUT ── */
+    .about-body {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.8;
+      max-width: 520px;
+    }
+
+    /* ── TABLE (skills, experience, projects) ── */
+    .table-block { margin-top: 0; }
+
+    .table-header {
+      display: grid;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--rule);
+      margin-bottom: 0;
+    }
+
+    .table-header span {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+    }
+
+    .table-row {
+      display: grid;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--rule);
+      align-items: start;
+    }
+
+    .table-row span { font-size: 13px; color: var(--text); }
+
+    /* 2-col tables */
+    .cols-2 .table-header,
+    .cols-2 .table-row { grid-template-columns: 1fr 1fr; }
+
+    /* 3-col tables */
+    .cols-3 .table-header,
+    .cols-3 .table-row { grid-template-columns: 2fr 2fr 1fr; }
+
+    .table-row .muted { color: var(--muted); font-size: 12px; }
+
+    /* ── PROJECTS ── */
+    .proj-row {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 16px;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--rule);
+      cursor: pointer;
+      transition: opacity .2s;
+    }
+    .proj-row:first-child { border-top: 1px solid var(--rule); }
+    .proj-row:hover { opacity: 0.7; }
+
+    .proj-num {
+      font-size: 11px;
+      color: var(--muted);
+      padding-top: 2px;
+    }
+
+    .proj-info {}
+
+    .proj-name {
+      font-size: 14px;
+      font-weight: 400;
       margin-bottom: 4px;
     }
 
-    .prompt-line {
-      display: flex; align-items: center;
-      margin-top: 6px; margin-bottom: 2px;
-    }
-    .p-user   { color: var(--green); font-weight: 700; }
-    .p-at     { color: var(--dim); }
-    .p-host   { color: var(--blue); font-weight: 700; }
-    .p-colon  { color: var(--dim); }
-    .p-path   { color: var(--gold); }
-    .p-dollar { color: var(--text); margin: 0 8px; }
-    .p-cmd    { color: var(--text); }
-
-    /* ── INPUT ROW ── */
-    .input-row {
-      flex-shrink: 0;
-      border-top: 1px solid var(--border);
-      background: var(--surface);
-      padding: 12px 32px;
-      display: flex; align-items: center;
-    }
-    #cmd-input {
-      flex: 1; background: transparent; border: none; outline: none;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 14px; color: var(--text);
-      caret-color: var(--gold);
+    .proj-desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 10px;
+      max-width: 480px;
     }
 
-    /* ── HINTS ── */
-    .hints {
-      flex-shrink: 0;
-      padding: 8px 32px 14px;
-      display: flex; flex-wrap: wrap; gap: 8px;
-      background: var(--surface);
-      border-top: 1px solid var(--border);
+    .proj-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
     }
-    .hint-label { font-size: 11px; color: var(--dim); align-self: center; margin-right: 4px; }
-    .hint {
-      background: none; border: 1px solid var(--border);
-      color: var(--muted); font-family: 'JetBrains Mono', monospace;
-      font-size: 11px; padding: 4px 12px; border-radius: 4px;
-      cursor: pointer; transition: all .2s;
-    }
-    .hint:hover { border-color: var(--gold); color: var(--gold); background: rgba(255,210,30,.04); }
 
-    @media (max-width: 600px) {
-      html, body { font-size: 12px; }
-      .terminal { padding: 16px; }
-      .input-row, .hints { padding-left: 16px; padding-right: 16px; }
-      .ascii { font-size: 8px; }
+    .proj-tag {
+      font-size: 11px;
+      color: var(--muted);
+      border: 1px solid var(--dim);
+      padding: 2px 8px;
+      border-radius: 2px;
+    }
+
+    /* ── BRACKET BUTTONS ── */
+    .bracket-btn {
+      background: none; border: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px; color: var(--muted);
+      cursor: pointer; padding: 0;
+      transition: color .15s;
+    }
+    .bracket-btn:hover { color: var(--text); }
+    .bracket-btn a { color: inherit; }
+
+    /* ── CONTACT ── */
+    .contact-email-label {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .contact-email-addr {
+      font-size: clamp(24px, 4vw, 48px);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+
+    .contact-actions {
+      display: flex;
+      justify-content: space-between;
+      border-top: 1px solid var(--rule);
+      padding-top: 14px;
+    }
+
+    .contact-social {
+      margin-top: 48px;
+      border-top: 1px solid var(--rule);
+      padding-top: 20px;
+    }
+
+    .social-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .social-name { font-size: 13px; }
+    .social-handle { font-size: 13px; color: var(--muted); }
+    .social-row:hover .social-name,
+    .social-row:hover .social-handle { color: var(--muted); cursor: pointer; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--rule);
+      padding: 20px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    footer span { font-size: 12px; color: var(--muted); }
+
+    /* ── LANGUAGE HIDING ── */
+    [data-lang] { display: none; }
+    [data-lang].active { display: block; }
+    [data-lang-i] { display: none; }
+    [data-lang-i].active { display: inline; }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      nav {
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .nav-col:nth-child(2),
+      .nav-col:nth-child(3),
+      .nav-col:nth-child(4) { display: none; }
+
+      .section {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        padding: 50px 0;
+      }
+
+      .marquee-text { font-size: 14vw; }
+
+      .contact-email-addr { font-size: 7vw; }
     }
   </style>
 </head>
 <body>
-<div class="window">
 
-  <div class="titlebar">
-    <div class="traffic-lights">
-      <div class="tl red"></div>
-      <div class="tl yellow"></div>
-      <div class="tl green"></div>
+<!-- ── NAVBAR ── -->
+<nav>
+  <div class="nav-name">
+    LUCCA
+    <a class="sub" href="#about" data-lang-i="en" data-scroll="about">About</a>
+    <a class="sub" href="#about" data-lang-i="pt" data-scroll="about">Sobre</a>
+    <a class="sub" href="#contact" data-lang-i="en" data-scroll="contact">Contact</a>
+    <a class="sub" href="#contact" data-lang-i="pt" data-scroll="contact">Contato</a>
+  </div>
+
+  <div class="nav-col">
+    <div class="nav-col-title">
+      <span class="nav-dot active"></span>
+      <span data-lang-i="en">PROJECTS</span>
+      <span data-lang-i="pt">PROJETOS</span>
     </div>
-    <div class="titlebar-title">lucca@dev: ~</div>
-    <div class="titlebar-lang">
-      <button class="tl-btn active" onclick="setLang('en',this)">EN</button>
-      <button class="tl-btn"        onclick="setLang('pt',this)">PT</button>
+    <a class="nav-sub" href="#projects" data-lang-i="en">Library System</a>
+    <a class="nav-sub" href="#projects" data-lang-i="pt">Bib. Sistema</a>
+    <a class="nav-sub" href="#projects" data-lang-i="en">Vaccination Game</a>
+    <a class="nav-sub" href="#projects" data-lang-i="pt">Jogo Vacinação</a>
+    <a class="nav-sub" href="#projects" data-lang-i="en">Minesweeper</a>
+    <a class="nav-sub" href="#projects" data-lang-i="pt">Campo Minado</a>
+  </div>
+
+  <div class="nav-col">
+    <div class="nav-col-title">
+      <span class="nav-dot"></span>
+      <span data-lang-i="en">SKILLS</span>
+      <span data-lang-i="pt">HABILIDADES</span>
+    </div>
+    <a class="nav-sub" href="#about" data-lang-i="en">Frontend</a>
+    <a class="nav-sub" href="#about" data-lang-i="pt">Frontend</a>
+    <a class="nav-sub" href="#about" data-lang-i="en">Algorithms</a>
+    <a class="nav-sub" href="#about" data-lang-i="pt">Algoritmos</a>
+  </div>
+
+  <div class="nav-col">
+    <div class="nav-col-title">
+      <span class="nav-dot"></span>
+      <span data-lang-i="en">LINKS</span>
+      <span data-lang-i="pt">LINKS</span>
+    </div>
+    <a class="nav-sub" href="https://github.com/luccamoura101" target="_blank">GitHub</a>
+    <a class="nav-sub" href="mailto:luccamoura101@gmail.com">Email</a>
+    <a class="nav-sub" href="https://instagram.com/lucca_mourarantes" target="_blank">Instagram</a>
+  </div>
+
+  <div class="nav-lang">
+    <div class="lang-row">
+      <button class="lang-btn active" onclick="setLang('en',this)">EN</button>
+      <button class="lang-btn" onclick="setLang('pt',this)">PT</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section id="hero">
+  <div class="marquee-wrap">
+    <div class="marquee-row">
+      <div class="marquee-track">
+        <span class="marquee-text">LUCCA DEV&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <span class="marquee-text">LUCCA DEV&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <span class="marquee-text">LUCCA DEV&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <span class="marquee-text">LUCCA DEV&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <span class="marquee-text">LUCCA DEV&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <span class="marquee-text">LUCCA DEV&nbsp;&nbsp;&nbsp;&nbsp;</span>
+      </div>
+    </div>
+    <div class="marquee-row" style="margin-top:-12px">
+      <div class="marquee-track" style="animation-direction:reverse">
+        <span class="marquee-text">LUCCA DEV&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <span class="marquee-text">LUCCA DEV&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <span class="marquee-text">LUCCA DEV&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <span class="marquee-text">LUCCA DEV&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <span class="marquee-text">LUCCA DEV&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <span class="marquee-text">LUCCA DEV&nbsp;&nbsp;&nbsp;&nbsp;</span>
+      </div>
+    </div>
+    <div class="marquee-row" style="margin-top:-12px">
+      <div class="marquee-track">
+        <span class="marquee-text">LUCCA DEV&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <span class="marquee-text">LUCCA DEV&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <span class="marquee-text">LUCCA DEV&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <span class="marquee-text">LUCCA DEV&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <span class="marquee-text">LUCCA DEV&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <span class="marquee-text">LUCCA DEV&nbsp;&nbsp;&nbsp;&nbsp;</span>
+      </div>
     </div>
   </div>
 
-  <div class="terminal" id="terminal"></div>
-
-  <div class="input-row">
-    <span class="p-user">lucca</span><span class="p-at">@</span><span class="p-host">dev</span><span class="p-colon">:</span><span class="p-path">~</span><span class="p-dollar">$</span>
-    <input id="cmd-input" type="text" autocomplete="off" spellcheck="false" placeholder="type a command..." autofocus />
+  <div class="hero-bottom">
+    <div class="hero-avail">
+      <span class="hero-avail-label">
+        <span data-lang-i="en">Availability</span>
+        <span data-lang-i="pt">Disponibilidade</span>
+      </span>
+      <span class="hero-avail-val">
+        <span class="green-dot"></span>
+        <span data-lang-i="en">Available Now</span>
+        <span data-lang-i="pt">Disponível Agora</span>
+      </span>
+    </div>
+    <div class="hero-loc">
+      <span class="hero-loc-label">
+        <span data-lang-i="en">Location</span>
+        <span data-lang-i="pt">Localização</span>
+      </span>
+      <span class="hero-loc-val">Brazil</span>
+    </div>
   </div>
+</section>
 
-  <div class="hints">
-    <span class="hint-label">→</span>
-    <button class="hint" onclick="runCmd('help')">help</button>
-    <button class="hint" onclick="runCmd('about')">about</button>
-    <button class="hint" onclick="runCmd('skills')">skills</button>
-    <button class="hint" onclick="runCmd('projects')">projects</button>
-    <button class="hint" onclick="runCmd('contact')">contact</button>
-    <button class="hint" onclick="runCmd('clear')">clear</button>
-  </div>
+<main>
 
-</div>
+  <!-- ── ABOUT ── -->
+  <section id="about" class="section">
+    <div class="section-left">
+      <h2 class="section-heading">
+        <span data-lang-i="en">About</span>
+        <span data-lang-i="pt">Sobre</span>
+      </h2>
+      <div data-lang="en" class="section-sub">
+        I'm a Computer Science student focused on creating functional, accessible interfaces.
+      </div>
+      <div data-lang="pt" class="section-sub">
+        Estudante de Ciência da Computação focado em criar interfaces funcionais e acessíveis.
+      </div>
+    </div>
+    <div class="section-right">
+      <div data-lang="en" class="about-body">
+        I'm Lucca, a developer and Computer Science student. I build functional, accessible
+        interfaces with a focus on user experience. Specializing in solutions that balance
+        functionality, usability, and visual identity.<br><br>
+        Currently evolving through side projects and always seeking to learn more and share
+        knowledge in a simple and practical way.
+      </div>
+      <div data-lang="pt" class="about-body">
+        Sou Lucca, desenvolvedor e estudante de Ciência da Computação. Crio interfaces funcionais
+        e acessíveis com foco na experiência do usuário. Construindo soluções que equilibram
+        funcionalidade, usabilidade e identidade visual.<br><br>
+        Sempre evoluindo através de projetos paralelos e buscando compartilhar conhecimento de
+        forma simples e prática.
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SKILLS / ACHIEVEMENTS ── -->
+  <section class="section">
+    <div class="section-left">
+      <h2 class="section-heading">
+        <span data-lang-i="en">Skills</span>
+        <span data-lang-i="pt">Habilidades</span>
+      </h2>
+      <div data-lang="en" class="section-sub">An overview of my current skillset.</div>
+      <div data-lang="pt" class="section-sub">Uma visão geral das minhas habilidades.</div>
+    </div>
+    <div class="section-right">
+
+      <!-- Skills table -->
+      <div class="table-block cols-2" style="margin-bottom: 48px;">
+        <div class="table-header">
+          <span data-lang-i="en">Category</span>
+          <span data-lang-i="pt">Categoria</span>
+          <span data-lang-i="en" style="text-align:right">Technologies</span>
+          <span data-lang-i="pt" style="text-align:right">Tecnologias</span>
+        </div>
+        <div class="table-row">
+          <span data-lang-i="en">Languages</span>
+          <span data-lang-i="pt">Linguagens</span>
+          <span style="text-align:right; color: var(--muted); font-size:12px;">Python, HTML, CSS, JavaScript</span>
+        </div>
+        <div class="table-row">
+          <span data-lang-i="en">Concepts</span>
+          <span data-lang-i="pt">Conceitos</span>
+          <span style="text-align:right; color: var(--muted); font-size:12px;">
+            <span data-lang-i="en">Data Structures, Algorithms, OOP</span>
+            <span data-lang-i="pt">Estruturas de Dados, Algoritmos, POO</span>
+          </span>
+        </div>
+        <div class="table-row">
+          <span data-lang-i="en">Tools</span>
+          <span data-lang-i="pt">Ferramentas</span>
+          <span style="text-align:right; color: var(--muted); font-size:12px;">Git, GitHub, VS Code</span>
+        </div>
+      </div>
+
+      <!-- Education table -->
+      <div style="margin-bottom: 8px;">
+        <div style="font-size:13px; margin-bottom:16px;">
+          <span data-lang-i="en">Education</span>
+          <span data-lang-i="pt">Educação</span>
+        </div>
+        <div class="table-block cols-3">
+          <div class="table-header">
+            <span data-lang-i="en">What</span>
+            <span data-lang-i="pt">O quê</span>
+            <span data-lang-i="en">Where</span>
+            <span data-lang-i="pt">Onde</span>
+            <span style="text-align:right">
+              <span data-lang-i="en">When</span>
+              <span data-lang-i="pt">Quando</span>
+            </span>
+          </div>
+          <div class="table-row">
+            <span data-lang-i="en">Computer Science</span>
+            <span data-lang-i="pt">Ciência da Computação</span>
+            <span class="muted">
+              <span data-lang-i="en">University</span>
+              <span data-lang-i="pt">Universidade</span>
+            </span>
+            <span class="muted" style="text-align:right">2024 – Now</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── PROJECTS ── -->
+  <section id="projects" class="section">
+    <div class="section-left">
+      <h2 class="section-heading">
+        <span data-lang-i="en">Projects</span>
+        <span data-lang-i="pt">Projetos</span>
+      </h2>
+      <div data-lang="en" class="section-sub">Things I've built.</div>
+      <div data-lang="pt" class="section-sub">O que já construí.</div>
+    </div>
+    <div class="section-right">
+
+      <div class="proj-row" onclick="window.open('https://github.com/luccamoura101','_blank')">
+        <span class="proj-num">01</span>
+        <div class="proj-info">
+          <div class="proj-name">
+            <span data-lang-i="en">Library Management System</span>
+            <span data-lang-i="pt">Sistema de Gerenciamento de Biblioteca</span>
+          </div>
+          <div data-lang="en" class="proj-desc">
+            Comprehensive library system with modern UI, book cataloging,
+            user management and lending operations.
+          </div>
+          <div data-lang="pt" class="proj-desc">
+            Sistema de biblioteca completo com interface moderna, catalogação
+            de livros, gestão de usuários e operações de empréstimo.
+          </div>
+          <div class="proj-tags">
+            <span class="proj-tag">Python</span>
+            <span class="proj-tag">
+              <span data-lang-i="en">Data Structures</span>
+              <span data-lang-i="pt">Estruturas de Dados</span>
+            </span>
+            <span class="proj-tag">
+              <span data-lang-i="en">Algorithms</span>
+              <span data-lang-i="pt">Algoritmos</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="proj-row" onclick="window.open('https://github.com/luccamoura101','_blank')">
+        <span class="proj-num">02</span>
+        <div class="proj-info">
+          <div class="proj-name">
+            <span data-lang-i="en">Vaccination Game</span>
+            <span data-lang-i="pt">Jogo de Vacinação</span>
+          </div>
+          <div data-lang="en" class="proj-desc">
+            Interactive SIR-Vax-Network simulation modeling disease spread
+            and vaccination strategies through network theory and game mechanics.
+          </div>
+          <div data-lang="pt" class="proj-desc">
+            Simulação interativa SIR-Vax-Network modelando propagação de doenças
+            e estratégias de vacinação via teoria de redes e mecânicas de jogo.
+          </div>
+          <div class="proj-tags">
+            <span class="proj-tag">Python</span>
+            <span class="proj-tag">
+              <span data-lang-i="en">Network Theory</span>
+              <span data-lang-i="pt">Teoria de Redes</span>
+            </span>
+            <span class="proj-tag">
+              <span data-lang-i="en">Simulation</span>
+              <span data-lang-i="pt">Simulação</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="proj-row" onclick="window.open('https://github.com/luccamoura101','_blank')">
+        <span class="proj-num">03</span>
+        <div class="proj-info">
+          <div class="proj-name">
+            <span data-lang-i="en">Minesweeper</span>
+            <span data-lang-i="pt">Campo Minado</span>
+          </div>
+          <div data-lang="en" class="proj-desc">
+            Classic Minesweeper remake with modern graphics, multiple difficulty
+            levels, custom board sizes, and an intuitive visual interface.
+          </div>
+          <div data-lang="pt" class="proj-desc">
+            Remake clássico do Campo Minado com gráficos modernos, múltiplos
+            níveis de dificuldade, tamanhos personalizáveis e interface intuitiva.
+          </div>
+          <div class="proj-tags">
+            <span class="proj-tag">Python</span>
+            <span class="proj-tag">
+              <span data-lang-i="en">Game Logic</span>
+              <span data-lang-i="pt">Lógica de Jogo</span>
+            </span>
+            <span class="proj-tag">UI/UX</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── CONTACT ── -->
+  <section id="contact" class="section">
+    <div class="section-left">
+      <h2 class="section-heading">
+        <span data-lang-i="en">Contact</span>
+        <span data-lang-i="pt">Contato</span>
+      </h2>
+      <div data-lang="en" class="section-sub">
+        Want to work together? Anything else? Feel free to reach out.
+      </div>
+      <div data-lang="pt" class="section-sub">
+        Quer trabalhar junto? Alguma outra coisa? Sinta-se à vontade para entrar em contato.
+      </div>
+    </div>
+    <div class="section-right">
+
+      <div class="contact-email-label">Email</div>
+      <div class="contact-email-addr">
+        <a href="mailto:luccamoura101@gmail.com">luccamoura101@gmail.com</a>
+      </div>
+      <div class="contact-actions">
+        <button class="bracket-btn" onclick="copyEmail()">
+          [ <span data-lang-i="en">Copy Email</span><span data-lang-i="pt">Copiar Email</span> ]
+        </button>
+        <button class="bracket-btn">
+          <a href="mailto:luccamoura101@gmail.com">
+            [ <span data-lang-i="en">Open in Email Client</span><span data-lang-i="pt">Abrir no Email</span> ]
+          </a>
+        </button>
+      </div>
+
+      <div class="contact-social">
+        <a href="https://github.com/luccamoura101" target="_blank">
+          <div class="social-row">
+            <span class="social-name">GitHub</span>
+            <span class="social-handle">github.com/luccamoura101</span>
+          </div>
+        </a>
+        <a href="https://instagram.com/lucca_mourarantes" target="_blank">
+          <div class="social-row">
+            <span class="social-name">Instagram</span>
+            <span class="social-handle">@lucca_mourarantes</span>
+          </div>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <span>© 2025 Lucca</span>
+  <span id="copy-toast" style="opacity:0; transition: opacity .3s; color: var(--muted);">
+    <span data-lang-i="en">Email copied!</span>
+    <span data-lang-i="pt">Email copiado!</span>
+  </span>
+  <span style="color: var(--muted);">
+    <span data-lang-i="en">Computer Science Student</span>
+    <span data-lang-i="pt">Estudante de Ciência da Computação</span>
+  </span>
+</footer>
+
 <script>
-let lang = 'en';
-let cmdHistory = [], histIdx = -1;
-const term  = document.getElementById('terminal');
-const input = document.getElementById('cmd-input');
+  let lang = 'en';
 
-// ── CONTENT ────────────────────────────────────────────────────
-const T = {
-  en: {
-    welcome: [
-      { t:'ascii', v:`  _    _   _  ___  ___  _    \n | |  | | | |/ __||  _|| |   \n | |__| |_| | (__ | |  | |__ \n |____|\\___/ \\___||_|  |____|` },
-      { t:'line gap-sm c-muted', v:'Portfolio v1.0  —  CS student & developer' },
-      { t:'line c-dim',          v:'─────────────────────────────────────────────' },
-      { t:'line gap',            v:'' },
-      { t:'line',                v:'Welcome! Type <span class="c-gold bold">help</span> to see available commands.' },
-    ],
-    help: [
-      { t:'line gap-sm c-gold bold', v:'Available commands:' },
-      { t:'line', v:'  <span class="c-gold">about</span>      —  Who I am' },
-      { t:'line', v:'  <span class="c-gold">skills</span>     —  Technologies I use' },
-      { t:'line', v:'  <span class="c-gold">projects</span>   —  Things I\'ve built' },
-      { t:'line', v:'  <span class="c-gold">contact</span>    —  Get in touch' },
-      { t:'line gap c-dim', v:'  clear      —  Clear terminal' },
-      { t:'line c-dim', v:'  ↑ ↓ to navigate history  |  Tab to autocomplete' },
-    ],
-    about: [
-      { t:'line gap-sm c-gold bold', v:'~/about' },
-      { t:'line', v:"I'm <span class='c-gold bold'>Lucca</span>, a developer and Computer Science student." },
-      { t:'line', v:'I build functional, accessible interfaces focused on user experience.' },
-      { t:'line gap', v:"Always learning, always building — every project is a chance to grow." },
-      { t:'line c-muted', v:'  📍 Brazil' },
-      { t:'line c-muted', v:'  🎓 Computer Science — currently enrolled' },
-    ],
-    skills: [
-      { t:'line gap-sm c-gold bold', v:'~/skills' },
-      { t:'line', v:'  <span class="c-blue">Languages</span>    Python · HTML · CSS · JavaScript' },
-      { t:'line', v:'  <span class="c-blue">Concepts</span>     Data Structures · Algorithms · OOP' },
-      { t:'line gap', v:'  <span class="c-blue">Tools</span>        Git · GitHub · VS Code' },
-      { t:'line c-dim', v:'  Always expanding this list...' },
-    ],
-    projects: [
-      { t:'line gap-sm c-gold bold', v:'~/projects' },
-      { t:'line c-green bold', v:'  [01]  Library Management System' },
-      { t:'line c-muted',      v:'        Full-featured library system with cataloging,' },
-      { t:'line c-muted gap-sm',v:'        user management, and lending operations.' },
-      { t:'line c-dim gap',    v:'        Python · Data Structures · Algorithms' },
-      { t:'line c-green bold', v:'  [02]  Vaccination Game  (SIR-Vax-Network)' },
-      { t:'line c-muted',      v:'        Interactive simulation of disease spread and' },
-      { t:'line c-muted gap-sm',v:'        vaccination strategies via network theory.' },
-      { t:'line c-dim gap',    v:'        Python · Network Theory · Simulation' },
-      { t:'line c-green bold', v:'  [03]  Minesweeper' },
-      { t:'line c-muted',      v:'        Classic Minesweeper remake with modern graphics,' },
-      { t:'line c-muted gap-sm',v:'        difficulty levels, and a custom interface.' },
-      { t:'line c-dim',        v:'        Python · Game Logic · UI/UX' },
-    ],
-    contact: [
-      { t:'line gap-sm c-gold bold', v:'~/contact' },
-      { t:'line gap',  v:"I'm always open to new projects, ideas, or a quick hello." },
-      { t:'line', v:'  <span class="c-blue">GitHub</span>      <a href="https://github.com/luccamoura101" target="_blank" style="color:var(--gold);text-decoration:none;">github.com/luccamoura101</a>' },
-      { t:'line', v:'  <span class="c-blue">Email</span>       <a href="mailto:luccamoura101@gmail.com" style="color:var(--gold);text-decoration:none;">luccamoura101@gmail.com</a>' },
-      { t:'line', v:'  <span class="c-blue">Instagram</span>   <a href="https://instagram.com/lucca_mourarantes" target="_blank" style="color:var(--gold);text-decoration:none;">@lucca_mourarantes</a>' },
-    ],
-    notFound: c => `<span class="c-red">command not found:</span> ${esc(c)}  —  type <span class="c-gold">help</span> for available commands.`,
-  },
-
-  pt: {
-    welcome: [
-      { t:'ascii', v:`  _    _   _  ___  ___  _    \n | |  | | | |/ __||  _|| |   \n | |__| |_| | (__ | |  | |__ \n |____|\\___/ \\___||_|  |____|` },
-      { t:'line gap-sm c-muted', v:'Portfólio v1.0  —  Estudante de CC & desenvolvedor' },
-      { t:'line c-dim',          v:'─────────────────────────────────────────────' },
-      { t:'line gap',            v:'' },
-      { t:'line',                v:'Bem-vindo! Digite <span class="c-gold bold">help</span> para ver os comandos disponíveis.' },
-    ],
-    help: [
-      { t:'line gap-sm c-gold bold', v:'Comandos disponíveis:' },
-      { t:'line', v:'  <span class="c-gold">about</span>      —  Quem sou eu' },
-      { t:'line', v:'  <span class="c-gold">skills</span>     —  Tecnologias que uso' },
-      { t:'line', v:'  <span class="c-gold">projects</span>   —  O que já construí' },
-      { t:'line', v:'  <span class="c-gold">contact</span>    —  Entrar em contato' },
-      { t:'line gap c-dim', v:'  clear      —  Limpar o terminal' },
-      { t:'line c-dim', v:'  ↑ ↓ para navegar o histórico  |  Tab para autocompletar' },
-    ],
-    about: [
-      { t:'line gap-sm c-gold bold', v:'~/sobre' },
-      { t:'line', v:"Sou <span class='c-gold bold'>Lucca</span>, desenvolvedor e estudante de Ciência da Computação." },
-      { t:'line', v:'Crio interfaces funcionais e acessíveis com foco na experiência do usuário.' },
-      { t:'line gap', v:"Sempre aprendendo, sempre construindo — cada projeto é uma chance de crescer." },
-      { t:'line c-muted', v:'  📍 Brasil' },
-      { t:'line c-muted', v:'  🎓 Ciência da Computação — cursando' },
-    ],
-    skills: [
-      { t:'line gap-sm c-gold bold', v:'~/habilidades' },
-      { t:'line', v:'  <span class="c-blue">Linguagens</span>   Python · HTML · CSS · JavaScript' },
-      { t:'line', v:'  <span class="c-blue">Conceitos</span>    Estruturas de Dados · Algoritmos · POO' },
-      { t:'line gap', v:'  <span class="c-blue">Ferramentas</span>  Git · GitHub · VS Code' },
-      { t:'line c-dim', v:'  Sempre expandindo essa lista...' },
-    ],
-    projects: [
-      { t:'line gap-sm c-gold bold', v:'~/projetos' },
-      { t:'line c-green bold', v:'  [01]  Sistema de Gerenciamento de Biblioteca' },
-      { t:'line c-muted',      v:'        Sistema completo com catalogação,' },
-      { t:'line c-muted gap-sm',v:'        gestão de usuários e operações de empréstimo.' },
-      { t:'line c-dim gap',    v:'        Python · Estruturas de Dados · Algoritmos' },
-      { t:'line c-green bold', v:'  [02]  Jogo de Vacinação  (SIR-Vax-Network)' },
-      { t:'line c-muted',      v:'        Simulação interativa de propagação de doenças e' },
-      { t:'line c-muted gap-sm',v:'        estratégias de vacinação via teoria de redes.' },
-      { t:'line c-dim gap',    v:'        Python · Teoria de Redes · Simulação' },
-      { t:'line c-green bold', v:'  [03]  Campo Minado' },
-      { t:'line c-muted',      v:'        Remake clássico com gráficos modernos,' },
-      { t:'line c-muted gap-sm',v:'        múltiplos níveis de dificuldade e interface personalizada.' },
-      { t:'line c-dim',        v:'        Python · Lógica de Jogo · UI/UX' },
-    ],
-    contact: [
-      { t:'line gap-sm c-gold bold', v:'~/contato' },
-      { t:'line gap',  v:"Estou sempre aberto a novos projetos, ideias ou um simples oi." },
-      { t:'line', v:'  <span class="c-blue">GitHub</span>      <a href="https://github.com/luccamoura101" target="_blank" style="color:var(--gold);text-decoration:none;">github.com/luccamoura101</a>' },
-      { t:'line', v:'  <span class="c-blue">Email</span>       <a href="mailto:luccamoura101@gmail.com" style="color:var(--gold);text-decoration:none;">luccamoura101@gmail.com</a>' },
-      { t:'line', v:'  <span class="c-blue">Instagram</span>   <a href="https://instagram.com/lucca_mourarantes" target="_blank" style="color:var(--gold);text-decoration:none;">@lucca_mourarantes</a>' },
-    ],
-    notFound: c => `<span class="c-red">comando não encontrado:</span> ${esc(c)}  —  digite <span class="c-gold">help</span> para ver os comandos.`,
-  }
-};
-
-// ── UTILS ──────────────────────────────────────────────────────
-function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-function appendLine(cls, html) {
-  const el = document.createElement('div');
-  // split class string and apply individually so gap / gap-sm work
-  cls.split(' ').forEach(c => { if(c) el.classList.add(c); });
-  el.innerHTML = html;
-  term.appendChild(el);
-}
-
-function appendPromptEcho(cmd) {
-  const el = document.createElement('div');
-  el.className = 'prompt-line';
-  el.innerHTML =
-    `<span class="p-user">lucca</span><span class="p-at">@</span>` +
-    `<span class="p-host">dev</span><span class="p-colon">:</span>` +
-    `<span class="p-path">~</span><span class="p-dollar">$</span>` +
-    `<span class="p-cmd"> ${esc(cmd)}</span>`;
-  term.appendChild(el);
-}
-
-function printLines(lines) {
-  lines.forEach(l => appendLine(l.t, l.v));
-  // spacer
-  appendLine('line', '');
-  term.scrollTop = term.scrollHeight;
-}
-
-// ── COMMANDS ───────────────────────────────────────────────────
-const CMDS = ['help','about','skills','projects','contact','clear'];
-
-function runCmd(raw) {
-  const cmd = raw.trim().toLowerCase();
-  if (!cmd) return;
-
-  if (cmdHistory[0] !== cmd) cmdHistory.unshift(cmd);
-  histIdx = -1;
-  input.value = '';
-  input.focus();
-
-  const t = T[lang];
-
-  if (cmd === 'clear') {
-    term.innerHTML = '';
-    return;
+  function setLang(l, btn) {
+    lang = l;
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('[data-lang]').forEach(el => {
+      el.classList.toggle('active', el.dataset.lang === l);
+    });
+    document.querySelectorAll('[data-lang-i]').forEach(el => {
+      el.classList.toggle('active', el.dataset.langI === l);
+    });
   }
 
-  appendPromptEcho(cmd);
-
-  if      (cmd === 'help')     printLines(t.help);
-  else if (cmd === 'about')    printLines(t.about);
-  else if (cmd === 'skills')   printLines(t.skills);
-  else if (cmd === 'projects') printLines(t.projects);
-  else if (cmd === 'contact')  printLines(t.contact);
-  else {
-    appendLine('line gap', t.notFound(cmd));
+  function copyEmail() {
+    navigator.clipboard.writeText('luccamoura101@gmail.com').then(() => {
+      const toast = document.getElementById('copy-toast');
+      toast.style.opacity = '1';
+      setTimeout(() => { toast.style.opacity = '0'; }, 2000);
+    });
   }
-}
 
-// ── LANGUAGE ───────────────────────────────────────────────────
-function setLang(l, btn) {
-  lang = l;
-  document.querySelectorAll('.tl-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  term.innerHTML = '';
-  boot(false);
-}
+  // Smooth scroll for nav links
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+    });
+  });
 
-// ── BOOT ───────────────────────────────────────────────────────
-function boot(animate) {
-  const lines = T[lang].welcome;
-  if (!animate) { printLines(lines); return; }
-
-  let i = 0;
-  function next() {
-    if (i >= lines.length) return;
-    const l = lines[i++];
-    if (l.t === 'ascii') {
-      const el = document.createElement('div');
-      el.className = 'ascii';
-      term.appendChild(el);
-      const txt = l.v;
-      let ci = 0;
-      function typeChar() {
-        if (ci < txt.length) {
-          el.textContent += txt[ci++];
-          term.scrollTop = term.scrollHeight;
-          setTimeout(typeChar, 6);
-        } else {
-          setTimeout(next, 100);
-        }
-      }
-      typeChar();
-    } else {
-      appendLine(l.t, l.v);
-      term.scrollTop = term.scrollHeight;
-      setTimeout(next, 80);
-    }
-  }
-  next();
-}
-
-// ── KEYBOARD ───────────────────────────────────────────────────
-input.addEventListener('keydown', e => {
-  if (e.key === 'Enter') {
-    runCmd(input.value);
-  } else if (e.key === 'ArrowUp') {
-    e.preventDefault();
-    if (histIdx < cmdHistory.length - 1) histIdx++;
-    input.value = cmdHistory[histIdx] ?? '';
-  } else if (e.key === 'ArrowDown') {
-    e.preventDefault();
-    histIdx > 0 ? histIdx-- : (histIdx = -1);
-    input.value = histIdx >= 0 ? cmdHistory[histIdx] : '';
-  } else if (e.key === 'Tab') {
-    e.preventDefault();
-    const v = input.value.toLowerCase();
-    const m = CMDS.find(c => c.startsWith(v) && c !== v);
-    if (m) input.value = m;
-  }
-});
-
-term.addEventListener('click', () => input.focus());
-
-boot(true);
+  // Init language display
+  setLang('en', document.querySelector('.lang-btn.active'));
 </script>
 </body>
 </html>
