@@ -5,823 +5,856 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lucca — Developer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400&family=IBM+Plex+Sans:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
+
+  <!-- Favicon: simple "L" SVG -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='4' fill='%23e8e0d0'/><text x='7' y='24' font-family='serif' font-size='22' fill='%237a6a5a'>L</text></svg>" />
+
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:     #000;
-      --text:   #fff;
-      --muted:  #555;
-      --dim:    #333;
-      --rule:   #1c1c1c;
-      --gold:   #ffd21e;
+      --bg:      #e8e0d0;
+      --bg2:     #dfd7c5;
+      --text:    #1c1812;
+      --muted:   #8c8375;
+      --dim:     #c8c0b0;
+      --rule:    #d4ccc0;
+      --accent:  #7a6a5a;
+      --accent2: #c4a882;
     }
 
     html { scroll-behavior: smooth; }
 
+    /* ── CUSTOM CURSOR ── */
+    * { cursor: none !important; }
+
+    .cursor {
+      position: fixed; z-index: 9999;
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      transition: transform .1s ease, width .2s ease, height .2s ease, opacity .2s;
+    }
+    .cursor.big {
+      width: 32px; height: 32px;
+      background: transparent;
+      border: 1px solid var(--accent);
+      opacity: .5;
+    }
+
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'Inter', sans-serif;
-      font-size: 13px;
-      font-weight: 400;
-      line-height: 1.5;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 13px; font-weight: 300; line-height: 1.6;
       overflow-x: hidden;
     }
 
     a { color: inherit; text-decoration: none; }
 
-    /* ── NAVBAR ── */
+    /* ════════════════════════════════
+       NAVBAR
+    ════════════════════════════════ */
     nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-      align-items: start;
-      padding: 18px 28px 0;
-      background: var(--bg);
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+      align-items: start; padding: 18px 32px 14px;
+      background: rgba(232, 224, 208, 0.93);
+      backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--rule);
-      padding-bottom: 14px;
     }
 
     .nav-name {
-      font-size: 12px;
-      font-weight: 500;
-      letter-spacing: 0.02em;
-      text-transform: uppercase;
-      line-height: 1.3;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px; font-weight: 500;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--text);
     }
-
     .nav-name .sub {
-      display: block;
-      color: var(--muted);
-      font-weight: 400;
-      text-transform: none;
-      font-size: 12px;
-      cursor: pointer;
+      display: block; font-family: 'IBM Plex Sans', sans-serif;
+      font-weight: 300; text-transform: none; font-size: 12px;
+      letter-spacing: 0; color: var(--muted); margin-top: 2px;
+      transition: color .2s;
     }
     .nav-name .sub:hover { color: var(--text); }
 
-    .nav-col {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
+    .nav-col { display: flex; flex-direction: column; gap: 2px; }
     .nav-col-title {
-      font-size: 12px;
-      font-weight: 400;
-      color: var(--text);
-      letter-spacing: 0.02em;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px; font-weight: 400; color: var(--muted);
+      letter-spacing: 0.12em; text-transform: uppercase;
+      display: flex; align-items: center; gap: 7px; margin-bottom: 2px;
     }
-
-    .nav-dot {
-      width: 5px; height: 5px; border-radius: 50%;
-      background: var(--muted);
-      display: inline-block;
-      flex-shrink: 0;
-    }
-    .nav-dot.active { background: var(--gold); }
-
-    .nav-col-title:hover { color: var(--muted); cursor: pointer; }
+    .nav-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--dim); flex-shrink: 0; }
+    .nav-dot.accent { background: var(--accent); }
 
     .nav-sub {
-      color: var(--muted);
-      font-size: 12px;
-      padding-left: 11px;
-      cursor: pointer;
-      transition: color .15s;
+      color: var(--muted); font-size: 12px;
+      padding-left: 12px; font-weight: 300;
+      transition: color .15s; position: relative;
     }
     .nav-sub:hover { color: var(--text); }
 
-    .nav-lang {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 2px;
+    /* active nav link */
+    .nav-sub.is-active { color: var(--accent); }
+    .nav-sub.is-active::before {
+      content: ''; position: absolute;
+      left: 0; top: 50%; transform: translateY(-50%);
+      width: 4px; height: 4px; border-radius: 50%;
+      background: var(--accent);
     }
 
-    .lang-row { display: flex; gap: 12px; }
-
+    .nav-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+    .lang-row { display: flex; gap: 10px; }
     .lang-btn {
       background: none; border: none;
-      font-family: 'Inter', sans-serif;
-      font-size: 12px; color: var(--muted);
-      cursor: pointer; padding: 0;
-      transition: color .15s;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px; letter-spacing: 0.08em; color: var(--muted);
+      padding: 0; text-transform: uppercase; transition: color .15s;
     }
     .lang-btn.active { color: var(--text); }
-    .lang-btn:hover { color: var(--text); }
+    .lang-btn:hover  { color: var(--text); }
 
-    /* ── HERO ── */
+    /* ════════════════════════════════
+       SCROLL FADE-UP
+    ════════════════════════════════ */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .65s ease, transform .65s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ════════════════════════════════
+       HERO
+    ════════════════════════════════ */
     #hero {
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding-top: 70px;
-      overflow: hidden;
+      height: 100vh; display: flex; flex-direction: column;
+      justify-content: space-between; padding-top: 62px; overflow: hidden;
     }
 
-    .marquee-wrap {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      overflow: hidden;
+    .hero-name-block {
+      flex: 1; display: flex; align-items: center; padding: 0 32px;
+      opacity: 0; animation: heroIn .9s .1s ease forwards;
+    }
+    @keyframes heroIn {
+      from { opacity: 0; transform: translateY(32px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
-    .marquee-row {
-      display: flex;
-      white-space: nowrap;
-      overflow: hidden;
+    .hero-name {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: clamp(52px, 9vw, 120px);
+      letter-spacing: -0.03em; line-height: 1; color: var(--text);
+    }
+    /* "Lucca" heavy, "— Dev" light italic */
+    .hero-name .heavy { font-weight: 500; }
+    .hero-name .light { font-weight: 300; font-style: italic; color: var(--muted); }
+
+    .hero-tagline {
+      font-size: 13px; color: var(--muted);
+      font-weight: 300; margin-top: 18px; line-height: 1.7;
     }
 
-    .marquee-row:nth-child(2) .marquee-track { animation-direction: reverse; }
-
+    .marquee-strip {
+      border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+      overflow: hidden; padding: 13px 0; background: var(--bg2);
+    }
     .marquee-track {
-      display: flex;
-      animation: marquee 30s linear infinite;
-      flex-shrink: 0;
+      display: flex; white-space: nowrap;
+      animation: marquee 28s linear infinite;
     }
+    .marquee-strip:hover .marquee-track { animation-play-state: paused; }
 
-    .marquee-text {
-      font-size: clamp(80px, 13vw, 180px);
-      font-weight: 500;
-      color: #1a1a1a;
-      letter-spacing: -0.02em;
-      line-height: 1;
-      text-transform: uppercase;
-      padding-right: 40px;
-      user-select: none;
+    .marquee-item {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px; font-weight: 400;
+      letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted);
     }
-
-    @keyframes marquee {
-      from { transform: translateX(0); }
-      to   { transform: translateX(-50%); }
-    }
+    .marquee-sep { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--accent); padding: 0 20px; }
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
     .hero-bottom {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      padding: 20px 28px 24px;
-      border-top: 1px solid var(--rule);
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 16px 32px; border-top: 1px solid var(--rule); background: var(--bg);
     }
-
-    .hero-avail {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-
+    .hero-avail { display: flex; align-items: center; gap: 10px; }
     .hero-avail-label {
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--muted);
+      font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+      text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted);
     }
-
-    .hero-avail-val {
-      font-size: 12px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
+    .avail-val { display: flex; align-items: center; gap: 7px; font-size: 12px; }
     .green-dot {
-      width: 7px; height: 7px; border-radius: 50%;
-      background: #2ecc71;
-      display: inline-block;
-      animation: pulse 2s ease-in-out infinite;
+      width: 6px; height: 6px; border-radius: 50%; background: #5a9e6f;
+      flex-shrink: 0; animation: pulse 2.5s ease-in-out infinite;
     }
-
     @keyframes pulse {
-      0%,100% { box-shadow: 0 0 0 0 rgba(46,204,113,.4); }
-      50%      { box-shadow: 0 0 0 5px rgba(46,204,113,0); }
+      0%,100% { box-shadow: 0 0 0 0 rgba(90,158,111,.4); }
+      50%      { box-shadow: 0 0 0 5px rgba(90,158,111,0); }
+    }
+    .hero-loc { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 0.06em; }
+
+    /* ════════════════════════════════
+       MAIN
+    ════════════════════════════════ */
+    main { padding: 0 32px; }
+
+    .sec-header {
+      border-top: 1px solid var(--rule); padding: 24px 0 0;
+      display: flex; align-items: baseline; justify-content: space-between;
+    }
+    .sec-tag {
+      font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+      text-transform: uppercase; letter-spacing: 0.18em; color: var(--muted);
+    }
+    .sec-tag::before { content: '— '; }
+
+    /* section number — now larger + accent tinted */
+    .sec-num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px; color: var(--accent2);
+      letter-spacing: 0.06em; font-weight: 400;
     }
 
-    .hero-loc {
-      text-align: right;
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
+    /* ════════════════════════════════
+       ABOUT
+    ════════════════════════════════ */
+    #about { padding: 0 0 120px; }
+
+    .about-pull { padding: 52px 0 40px; border-bottom: 1px solid var(--rule); }
+    .about-pull-text {
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: clamp(22px, 3.2vw, 38px); font-weight: 300; font-style: italic;
+      line-height: 1.35; color: var(--text); letter-spacing: -0.01em; max-width: 820px;
+    }
+    .about-pull-text em {
+      font-style: normal; color: var(--accent);
+      border-bottom: 1px solid var(--accent2);
     }
 
-    .hero-loc-label {
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--muted);
+    .about-cols {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 48px; padding: 40px 0 0;
+    }
+    .about-col p { font-size: 13px; color: var(--muted); line-height: 2; font-weight: 300; }
+    .about-col p + p { margin-top: 16px; }
+    .about-col strong { color: var(--text); font-weight: 400; }
+
+    .about-facts { display: flex; flex-direction: column; }
+    .fact-row {
+      display: flex; justify-content: space-between; align-items: baseline;
+      padding: 12px 10px; border-bottom: 1px solid var(--rule);
+      border-radius: 3px; transition: background .2s;
+    }
+    .fact-row:first-child { border-top: 1px solid var(--rule); }
+    .fact-row:hover { background: var(--bg2); }
+    .fact-key {
+      font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+      text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted);
+    }
+    .fact-val { font-size: 13px; font-weight: 300; color: var(--text); text-align: right; }
+
+    /* ════════════════════════════════
+       CURRENTLY
+    ════════════════════════════════ */
+    #currently { padding: 0 0 120px; }
+
+    .now-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 0; margin-top: 32px;
+      border: 1px solid var(--rule); border-radius: 4px; overflow: hidden;
     }
 
-    .hero-loc-val { font-size: 12px; }
-
-    /* ── MAIN LAYOUT ── */
-    main { padding: 0 28px; }
-
-    .section {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0 80px;
-      padding: 80px 0;
-      border-top: 1px solid var(--rule);
+    .now-card {
+      padding: 28px 32px; border-right: 1px solid var(--rule);
+      transition: background .25s;
     }
+    .now-card:last-child { border-right: none; }
+    .now-card:hover { background: var(--bg2); }
 
-    .section-left {}
-
-    .section-heading {
-      font-size: clamp(36px, 5vw, 60px);
-      font-weight: 400;
-      line-height: 1.05;
-      letter-spacing: -0.02em;
-      margin-bottom: 16px;
+    .now-card-label {
+      font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+      text-transform: uppercase; letter-spacing: 0.14em;
+      color: var(--muted); margin-bottom: 10px;
     }
-
-    .section-sub {
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.7;
-      max-width: 300px;
-    }
-
-    .section-right {}
-
-    /* ── ABOUT ── */
-    .about-body {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.8;
-      max-width: 520px;
-    }
-
-    /* ── TABLE (skills, experience, projects) ── */
-    .table-block { margin-top: 0; }
-
-    .table-header {
-      display: grid;
-      padding-bottom: 8px;
-      border-bottom: 1px solid var(--rule);
-      margin-bottom: 0;
-    }
-
-    .table-header span {
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--muted);
-    }
-
-    .table-row {
-      display: grid;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--rule);
-      align-items: start;
-    }
-
-    .table-row span { font-size: 13px; color: var(--text); }
-
-    /* 2-col tables */
-    .cols-2 .table-header,
-    .cols-2 .table-row { grid-template-columns: 1fr 1fr; }
-
-    /* 3-col tables */
-    .cols-3 .table-header,
-    .cols-3 .table-row { grid-template-columns: 2fr 2fr 1fr; }
-
-    .table-row .muted { color: var(--muted); font-size: 12px; }
-
-    /* ── PROJECTS ── */
-    .proj-row {
-      display: grid;
-      grid-template-columns: 28px 1fr;
-      gap: 16px;
-      padding: 20px 0;
-      border-bottom: 1px solid var(--rule);
-      cursor: pointer;
-      transition: opacity .2s;
-    }
-    .proj-row:first-child { border-top: 1px solid var(--rule); }
-    .proj-row:hover { opacity: 0.7; }
-
-    .proj-num {
-      font-size: 11px;
-      color: var(--muted);
-      padding-top: 2px;
-    }
-
-    .proj-info {}
-
-    .proj-name {
-      font-size: 14px;
-      font-weight: 400;
-      margin-bottom: 4px;
-    }
-
-    .proj-desc {
-      font-size: 12px;
-      color: var(--muted);
+    .now-card-val {
+      font-size: 14px; font-weight: 300; color: var(--text);
       line-height: 1.6;
-      margin-bottom: 10px;
-      max-width: 480px;
+    }
+    .now-card-val em { font-style: italic; color: var(--muted); }
+
+    /* ════════════════════════════════
+       SKILLS
+    ════════════════════════════════ */
+    #skills { padding: 0 0 120px; }
+
+    .skill-row {
+      display: flex; align-items: baseline;
+      padding: 24px 0; border-bottom: 1px solid var(--rule);
+      transition: padding-left .25s;
+    }
+    .skill-row:first-child { border-top: 1px solid var(--rule); margin-top: 32px; }
+    .skill-row:hover { padding-left: 8px; }
+
+    .skill-cat {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: clamp(22px, 3vw, 36px); font-weight: 300;
+      color: var(--text); letter-spacing: -0.02em; line-height: 1;
+      flex: 0 0 280px; min-width: 0; transition: color .2s;
+    }
+    .skill-divider {
+      width: 1px; height: 20px; background: var(--dim); flex-shrink: 0;
+      margin: 0 40px; align-self: center; transition: background .2s;
+    }
+    .skill-items {
+      flex: 1; display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: center;
+    }
+    .skill-item { font-size: 12px; color: var(--muted); font-weight: 300; transition: color .2s; }
+
+    .skill-row:hover .skill-cat    { color: var(--accent); }
+    .skill-row:hover .skill-item   { color: var(--text); }
+    .skill-row:hover .skill-divider { background: var(--accent2); }
+
+    /* ════════════════════════════════
+       PROJECTS
+    ════════════════════════════════ */
+    #projects { padding: 0 0 120px; }
+
+    .proj-card {
+      position: relative; border: 1px solid var(--rule); border-radius: 6px;
+      padding: 40px 44px; margin-bottom: 20px;
+      cursor: none; overflow: hidden; background: var(--bg);
+      transition: border-color .3s, background .3s, box-shadow .3s, transform .3s;
+    }
+    .proj-card:hover {
+      border-color: var(--accent2); background: var(--bg2);
+      box-shadow: 0 6px 48px rgba(122,106,90,.09);
+      transform: translateY(-2px);
+    }
+    .proj-card:hover .proj-card-arrow { opacity: 1; transform: translate(0,0); color: var(--accent); }
+    .proj-card:hover .proj-card-num   { color: rgba(122,106,90,.07); }
+
+    .proj-card-num {
+      position: absolute; top: -10px; right: 30px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: clamp(80px, 12vw, 140px); font-weight: 500;
+      color: rgba(26,24,20,.03); line-height: 1;
+      pointer-events: none; transition: color .3s; user-select: none;
     }
 
-    .proj-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
+    .proj-card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; }
+    .proj-card-title {
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: clamp(18px, 2.5vw, 26px); font-weight: 300;
+      letter-spacing: -0.01em; line-height: 1.2; color: var(--text); max-width: 600px;
     }
-
+    .proj-card-meta { display: flex; align-items: center; gap: 16px; flex-shrink: 0; margin-left: 20px; }
+    .proj-card-year { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 0.06em; }
+    .proj-card-arrow {
+      font-size: 18px; color: var(--muted);
+      opacity: 0; transform: translate(-4px, 4px); transition: all .25s ease;
+    }
+    .proj-card-desc { font-size: 13px; color: var(--muted); line-height: 1.85; font-weight: 300; max-width: 580px; margin-bottom: 24px; }
+    .proj-card-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      border-top: 1px solid var(--rule); padding-top: 16px;
+    }
+    .proj-tags { display: flex; flex-wrap: wrap; gap: 8px; }
     .proj-tag {
-      font-size: 11px;
-      color: var(--muted);
-      border: 1px solid var(--dim);
-      padding: 2px 8px;
-      border-radius: 2px;
+      font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+      letter-spacing: 0.06em; color: var(--muted);
+      border: 1px solid var(--dim); padding: 4px 12px;
+      border-radius: 20px;                        /* rounder pills */
+      background: var(--bg); transition: background .2s, color .2s, border-color .2s;
     }
+    .proj-card:hover .proj-tag { background: var(--bg2); border-color: var(--accent2); }
 
-    /* ── BRACKET BUTTONS ── */
-    .bracket-btn {
-      background: none; border: none;
-      font-family: 'Inter', sans-serif;
-      font-size: 13px; color: var(--muted);
-      cursor: pointer; padding: 0;
-      transition: color .15s;
+    .proj-card-link {
+      font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--muted);
+      display: flex; align-items: center; gap: 5px; transition: color .2s;
     }
-    .bracket-btn:hover { color: var(--text); }
-    .bracket-btn a { color: inherit; }
+    .proj-card:hover .proj-card-link { color: var(--accent); }
 
-    /* ── CONTACT ── */
+    /* ════════════════════════════════
+       CONTACT
+    ════════════════════════════════ */
+    #contact { padding: 0 0 0; }
+
+    .contact-inner { padding: 52px 0 80px; }
+    .contact-intro { font-size: 13px; color: var(--muted); font-weight: 300; line-height: 1.9; max-width: 460px; margin-bottom: 48px; }
+
     .contact-email-label {
-      font-size: 13px;
-      color: var(--muted);
-      margin-bottom: 10px;
+      font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+      text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); margin-bottom: 10px;
     }
-
     .contact-email-addr {
-      font-size: clamp(24px, 4vw, 48px);
-      font-weight: 400;
-      letter-spacing: -0.02em;
-      line-height: 1.1;
-      margin-bottom: 20px;
+      display: inline-block; font-size: clamp(18px, 2.4vw, 26px);
+      font-weight: 300; letter-spacing: -0.01em; margin-bottom: 20px; position: relative;
     }
+    .contact-email-addr a::after {
+      content: ''; position: absolute; bottom: -2px; left: 0; right: 0;
+      height: 1px; background: var(--accent);
+      transform: scaleX(0); transform-origin: left; transition: transform .35s ease;
+    }
+    .contact-email-addr a:hover::after { transform: scaleX(1); }
 
     .contact-actions {
-      display: flex;
-      justify-content: space-between;
-      border-top: 1px solid var(--rule);
-      padding-top: 14px;
+      display: flex; gap: 32px;
+      border-top: 1px solid var(--rule); padding-top: 14px;
+      margin-top: 4px; margin-bottom: 52px;
     }
-
-    .contact-social {
-      margin-top: 48px;
-      border-top: 1px solid var(--rule);
-      padding-top: 20px;
+    .link-arrow {
+      font-size: 12px; color: var(--muted);
+      display: flex; align-items: center; gap: 6px;
+      transition: color .2s, gap .2s;
+      background: none; border: none;
+      font-family: 'IBM Plex Sans', sans-serif; font-weight: 300; padding: 0;
     }
+    .link-arrow:hover { color: var(--accent); gap: 10px; }
+    .link-arrow .arr { font-size: 14px; transition: transform .2s; }
+    .link-arrow:hover .arr { transform: translate(2px,-2px); }
 
     .social-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 10px 0;
-      border-bottom: 1px solid var(--rule);
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 0; border-bottom: 1px solid var(--rule); transition: opacity .2s;
     }
+    .social-row:first-child { border-top: 1px solid var(--rule); }
+    .social-row:hover { opacity: .5; }
+    .social-name { font-size: 13px; font-weight: 300; }
+    .social-handle {
+      font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--muted);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .social-handle .arr { transition: transform .2s; }
+    .social-row:hover .social-handle .arr { transform: translate(3px,-3px); }
 
-    .social-name { font-size: 13px; }
-    .social-handle { font-size: 13px; color: var(--muted); }
-    .social-row:hover .social-name,
-    .social-row:hover .social-handle { color: var(--muted); cursor: pointer; }
-
-    /* ── FOOTER ── */
+    /* ════════════════════════════════
+       FOOTER
+    ════════════════════════════════ */
     footer {
-      border-top: 1px solid var(--rule);
-      padding: 20px 28px;
-      display: flex;
-      justify-content: space-between;
+      border-top: 1px solid var(--rule); padding: 20px 32px 24px;
+      background: var(--bg2);
+      display: flex; flex-direction: column; gap: 6px;
       align-items: center;
     }
+    .footer-quote {
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-style: italic; font-size: 13px; font-weight: 300;
+      color: var(--muted); text-align: center; margin-bottom: 6px;
+    }
+    .footer-meta {
+      display: flex; justify-content: space-between; align-items: center;
+      width: 100%;
+    }
+    .footer-meta span {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px; color: var(--muted); letter-spacing: 0.04em;
+    }
 
-    footer span { font-size: 12px; color: var(--muted); }
+    /* ════════════════════════════════
+       TOAST
+    ════════════════════════════════ */
+    #toast {
+      position: fixed; bottom: 30px; left: 50%;
+      transform: translateX(-50%) translateY(10px);
+      background: var(--text); color: var(--bg);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px; padding: 10px 20px; border-radius: 4px;
+      opacity: 0; transition: opacity .3s, transform .3s;
+      pointer-events: none; letter-spacing: 0.04em; white-space: nowrap;
+    }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-    /* ── LANGUAGE HIDING ── */
-    [data-lang] { display: none; }
-    [data-lang].active { display: block; }
-    [data-lang-i] { display: none; }
+    /* ════════════════════════════════
+       LANGUAGE
+    ════════════════════════════════ */
+    [data-lang]          { display: none; }
+    [data-lang].active   { display: block; }
+    [data-lang-i]        { display: none; }
     [data-lang-i].active { display: inline; }
 
-    /* ── MOBILE ── */
-    @media (max-width: 768px) {
-      nav {
-        grid-template-columns: 1fr 1fr;
-        gap: 16px;
-      }
-      .nav-col:nth-child(2),
-      .nav-col:nth-child(3),
-      .nav-col:nth-child(4) { display: none; }
-
-      .section {
-        grid-template-columns: 1fr;
-        gap: 40px;
-        padding: 50px 0;
-      }
-
-      .marquee-text { font-size: 14vw; }
-
-      .contact-email-addr { font-size: 7vw; }
+    /* ════════════════════════════════
+       MOBILE
+    ════════════════════════════════ */
+    @media (max-width: 860px) {
+      * { cursor: auto !important; }
+      .cursor { display: none; }
+      nav { grid-template-columns: 1fr 1fr; }
+      .nav-col { display: none; }
+      main, nav, footer, .hero-name-block, .hero-bottom { padding-left: 20px; padding-right: 20px; }
+      .about-cols { grid-template-columns: 1fr; gap: 32px; }
+      .skill-cat { flex: 0 0 150px; font-size: 20px; }
+      .skill-divider { margin: 0 20px; }
+      .proj-card { padding: 28px 24px; }
+      .proj-card-num { font-size: 70px; }
+      .now-grid { grid-template-columns: 1fr; }
+      .now-card { border-right: none; border-bottom: 1px solid var(--rule); }
+      .now-card:last-child { border-bottom: none; }
+      .footer-meta { flex-direction: column; gap: 6px; align-items: center; }
     }
   </style>
 </head>
 <body>
 
-<!-- ── NAVBAR ── -->
+<!-- Custom cursor -->
+<div class="cursor" id="cursor"></div>
+
+<!-- NAVBAR -->
 <nav>
   <div class="nav-name">
     LUCCA
-    <a class="sub" href="#about" data-lang-i="en" data-scroll="about">About</a>
-    <a class="sub" href="#about" data-lang-i="pt" data-scroll="about">Sobre</a>
-    <a class="sub" href="#contact" data-lang-i="en" data-scroll="contact">Contact</a>
-    <a class="sub" href="#contact" data-lang-i="pt" data-scroll="contact">Contato</a>
+    <a class="sub" href="#about"><span data-lang-i="en">About</span><span data-lang-i="pt">Sobre</span></a>
+    <a class="sub" href="#contact"><span data-lang-i="en">Contact</span><span data-lang-i="pt">Contato</span></a>
   </div>
-
   <div class="nav-col">
-    <div class="nav-col-title">
-      <span class="nav-dot active"></span>
-      <span data-lang-i="en">PROJECTS</span>
-      <span data-lang-i="pt">PROJETOS</span>
-    </div>
-    <a class="nav-sub" href="#projects" data-lang-i="en">Library System</a>
-    <a class="nav-sub" href="#projects" data-lang-i="pt">Bib. Sistema</a>
-    <a class="nav-sub" href="#projects" data-lang-i="en">Vaccination Game</a>
-    <a class="nav-sub" href="#projects" data-lang-i="pt">Jogo Vacinação</a>
-    <a class="nav-sub" href="#projects" data-lang-i="en">Minesweeper</a>
-    <a class="nav-sub" href="#projects" data-lang-i="pt">Campo Minado</a>
+    <div class="nav-col-title"><span class="nav-dot accent"></span><span data-lang-i="en">Projects</span><span data-lang-i="pt">Projetos</span></div>
+    <a class="nav-sub" href="#projects" data-section="projects"><span data-lang-i="en">Library System</span><span data-lang-i="pt">Sist. Biblioteca</span></a>
+    <a class="nav-sub" href="#projects" data-section="projects"><span data-lang-i="en">Vaccination Game</span><span data-lang-i="pt">Jogo Vacinação</span></a>
+    <a class="nav-sub" href="#projects" data-section="projects"><span data-lang-i="en">Minesweeper</span><span data-lang-i="pt">Campo Minado</span></a>
   </div>
-
   <div class="nav-col">
-    <div class="nav-col-title">
-      <span class="nav-dot"></span>
-      <span data-lang-i="en">SKILLS</span>
-      <span data-lang-i="pt">HABILIDADES</span>
-    </div>
-    <a class="nav-sub" href="#about" data-lang-i="en">Frontend</a>
-    <a class="nav-sub" href="#about" data-lang-i="pt">Frontend</a>
-    <a class="nav-sub" href="#about" data-lang-i="en">Algorithms</a>
-    <a class="nav-sub" href="#about" data-lang-i="pt">Algoritmos</a>
+    <div class="nav-col-title"><span class="nav-dot"></span><span data-lang-i="en">Skills</span><span data-lang-i="pt">Habilidades</span></div>
+    <a class="nav-sub" href="#skills" data-section="skills">Python</a>
+    <a class="nav-sub" href="#skills" data-section="skills"><span data-lang-i="en">Algorithms</span><span data-lang-i="pt">Algoritmos</span></a>
+    <a class="nav-sub" href="#skills" data-section="skills">Git / GitHub</a>
   </div>
-
   <div class="nav-col">
-    <div class="nav-col-title">
-      <span class="nav-dot"></span>
-      <span data-lang-i="en">LINKS</span>
-      <span data-lang-i="pt">LINKS</span>
-    </div>
-    <a class="nav-sub" href="https://github.com/luccamoura101" target="_blank">GitHub</a>
-    <a class="nav-sub" href="mailto:luccamoura101@gmail.com">Email</a>
-    <a class="nav-sub" href="https://instagram.com/lucca_mourarantes" target="_blank">Instagram</a>
+    <div class="nav-col-title"><span class="nav-dot"></span>Links</div>
+    <a class="nav-sub" href="https://github.com/luccamoura101" target="_blank">GitHub ↗</a>
+    <a class="nav-sub" href="mailto:luccamoura101@gmail.com">Email ↗</a>
+    <a class="nav-sub" href="https://instagram.com/lucca_mourarantes" target="_blank">Instagram ↗</a>
   </div>
-
-  <div class="nav-lang">
+  <div class="nav-right">
     <div class="lang-row">
       <button class="lang-btn active" onclick="setLang('en',this)">EN</button>
-      <button class="lang-btn" onclick="setLang('pt',this)">PT</button>
+      <button class="lang-btn"        onclick="setLang('pt',this)">PT</button>
     </div>
   </div>
 </nav>
 
-<!-- ── HERO ── -->
+<!-- HERO -->
 <section id="hero">
-  <div class="marquee-wrap">
-    <div class="marquee-row">
-      <div class="marquee-track">
-        <span class="marquee-text">LUCCA DEV&nbsp;&nbsp;&nbsp;&nbsp;</span>
-        <span class="marquee-text">LUCCA DEV&nbsp;&nbsp;&nbsp;&nbsp;</span>
-        <span class="marquee-text">LUCCA DEV&nbsp;&nbsp;&nbsp;&nbsp;</span>
-        <span class="marquee-text">LUCCA DEV&nbsp;&nbsp;&nbsp;&nbsp;</span>
-        <span class="marquee-text">LUCCA DEV&nbsp;&nbsp;&nbsp;&nbsp;</span>
-        <span class="marquee-text">LUCCA DEV&nbsp;&nbsp;&nbsp;&nbsp;</span>
+  <div class="hero-name-block">
+    <div>
+      <div class="hero-name">
+        <span class="heavy">Lucca</span> <span class="light">— Dev</span>
       </div>
-    </div>
-    <div class="marquee-row" style="margin-top:-12px">
-      <div class="marquee-track" style="animation-direction:reverse">
-        <span class="marquee-text">LUCCA DEV&nbsp;&nbsp;&nbsp;&nbsp;</span>
-        <span class="marquee-text">LUCCA DEV&nbsp;&nbsp;&nbsp;&nbsp;</span>
-        <span class="marquee-text">LUCCA DEV&nbsp;&nbsp;&nbsp;&nbsp;</span>
-        <span class="marquee-text">LUCCA DEV&nbsp;&nbsp;&nbsp;&nbsp;</span>
-        <span class="marquee-text">LUCCA DEV&nbsp;&nbsp;&nbsp;&nbsp;</span>
-        <span class="marquee-text">LUCCA DEV&nbsp;&nbsp;&nbsp;&nbsp;</span>
-      </div>
-    </div>
-    <div class="marquee-row" style="margin-top:-12px">
-      <div class="marquee-track">
-        <span class="marquee-text">LUCCA DEV&nbsp;&nbsp;&nbsp;&nbsp;</span>
-        <span class="marquee-text">LUCCA DEV&nbsp;&nbsp;&nbsp;&nbsp;</span>
-        <span class="marquee-text">LUCCA DEV&nbsp;&nbsp;&nbsp;&nbsp;</span>
-        <span class="marquee-text">LUCCA DEV&nbsp;&nbsp;&nbsp;&nbsp;</span>
-        <span class="marquee-text">LUCCA DEV&nbsp;&nbsp;&nbsp;&nbsp;</span>
-        <span class="marquee-text">LUCCA DEV&nbsp;&nbsp;&nbsp;&nbsp;</span>
+      <div class="hero-tagline">
+        <span data-lang-i="en">Building clean, functional software · Computer Science · Brazil</span>
+        <span data-lang-i="pt">Construindo software limpo e funcional · Ciência da Computação · Brasil</span>
       </div>
     </div>
   </div>
-
+  <div class="marquee-strip">
+    <div class="marquee-track">
+      <span class="marquee-item">Developer</span><span class="marquee-sep">✦</span>
+      <span class="marquee-item">Computer Science</span><span class="marquee-sep">✦</span>
+      <span class="marquee-item">Brazil</span><span class="marquee-sep">✦</span>
+      <span class="marquee-item">Open to Work</span><span class="marquee-sep">✦</span>
+      <span class="marquee-item">Python</span><span class="marquee-sep">✦</span>
+      <span class="marquee-item">Frontend</span><span class="marquee-sep">✦</span>
+      <span class="marquee-item">Algorithms</span><span class="marquee-sep">✦</span>
+      <span class="marquee-item">Developer</span><span class="marquee-sep">✦</span>
+      <span class="marquee-item">Computer Science</span><span class="marquee-sep">✦</span>
+      <span class="marquee-item">Brazil</span><span class="marquee-sep">✦</span>
+      <span class="marquee-item">Open to Work</span><span class="marquee-sep">✦</span>
+      <span class="marquee-item">Python</span><span class="marquee-sep">✦</span>
+      <span class="marquee-item">Frontend</span><span class="marquee-sep">✦</span>
+      <span class="marquee-item">Algorithms</span><span class="marquee-sep">✦</span>
+    </div>
+  </div>
   <div class="hero-bottom">
     <div class="hero-avail">
-      <span class="hero-avail-label">
-        <span data-lang-i="en">Availability</span>
-        <span data-lang-i="pt">Disponibilidade</span>
-      </span>
-      <span class="hero-avail-val">
+      <span class="hero-avail-label"><span data-lang-i="en">Availability</span><span data-lang-i="pt">Disponibilidade</span></span>
+      <span class="avail-val">
         <span class="green-dot"></span>
-        <span data-lang-i="en">Available Now</span>
-        <span data-lang-i="pt">Disponível Agora</span>
+        <span data-lang-i="en">Available Now</span><span data-lang-i="pt">Disponível Agora</span>
       </span>
     </div>
-    <div class="hero-loc">
-      <span class="hero-loc-label">
-        <span data-lang-i="en">Location</span>
-        <span data-lang-i="pt">Localização</span>
-      </span>
-      <span class="hero-loc-val">Brazil</span>
-    </div>
+    <div class="hero-loc"><span data-lang-i="en">Brazil</span><span data-lang-i="pt">Brasil</span></div>
   </div>
 </section>
 
 <main>
 
-  <!-- ── ABOUT ── -->
-  <section id="about" class="section">
-    <div class="section-left">
-      <h2 class="section-heading">
-        <span data-lang-i="en">About</span>
-        <span data-lang-i="pt">Sobre</span>
-      </h2>
-      <div data-lang="en" class="section-sub">
-        I'm a Computer Science student focused on creating functional, accessible interfaces.
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="sec-header fade-up">
+      <span class="sec-tag"><span data-lang-i="en">About</span><span data-lang-i="pt">Sobre</span></span>
+      <span class="sec-num">01</span>
+    </div>
+    <div class="about-pull fade-up">
+      <div data-lang="en" class="about-pull-text">
+        I build things for the web — with a focus on <em>function</em>,
+        <em>clarity</em>, and the kind of craft that makes a product feel right.
       </div>
-      <div data-lang="pt" class="section-sub">
-        Estudante de Ciência da Computação focado em criar interfaces funcionais e acessíveis.
+      <div data-lang="pt" class="about-pull-text">
+        Construo coisas para a web — com foco em <em>função</em>,
+        <em>clareza</em> e o tipo de cuidado que faz um produto parecer certo.
       </div>
     </div>
-    <div class="section-right">
-      <div data-lang="en" class="about-body">
-        I'm Lucca, a developer and Computer Science student. I build functional, accessible
-        interfaces with a focus on user experience. Specializing in solutions that balance
-        functionality, usability, and visual identity.<br><br>
-        Currently evolving through side projects and always seeking to learn more and share
-        knowledge in a simple and practical way.
+    <div class="about-cols fade-up">
+      <div class="about-col">
+        <div data-lang="en">
+          <p>I'm <strong>Lucca</strong>, a Computer Science student and developer from Brazil. I build functional, accessible interfaces focused on user experience — balancing functionality, usability, and visual identity.</p>
+          <p>Currently evolving through side projects, always learning, always building. Every project is a chance to push limits and create something that makes a real difference.</p>
+        </div>
+        <div data-lang="pt">
+          <p>Sou <strong>Lucca</strong>, estudante de Ciência da Computação e desenvolvedor do Brasil. Construo interfaces funcionais e acessíveis com foco na experiência do usuário — equilibrando funcionalidade, usabilidade e identidade visual.</p>
+          <p>Evoluindo através de projetos paralelos, sempre aprendendo, sempre construindo. Cada projeto é uma chance de expandir limites e criar algo que faz diferença.</p>
+        </div>
       </div>
-      <div data-lang="pt" class="about-body">
-        Sou Lucca, desenvolvedor e estudante de Ciência da Computação. Crio interfaces funcionais
-        e acessíveis com foco na experiência do usuário. Construindo soluções que equilibram
-        funcionalidade, usabilidade e identidade visual.<br><br>
-        Sempre evoluindo através de projetos paralelos e buscando compartilhar conhecimento de
-        forma simples e prática.
+      <div class="about-col">
+        <div class="about-facts">
+          <div class="fact-row">
+            <span class="fact-key"><span data-lang-i="en">Status</span><span data-lang-i="pt">Status</span></span>
+            <span class="fact-val"><span data-lang-i="en">Open to work</span><span data-lang-i="pt">Disponível</span></span>
+          </div>
+          <div class="fact-row">
+            <span class="fact-key"><span data-lang-i="en">Location</span><span data-lang-i="pt">Localização</span></span>
+            <span class="fact-val"><span data-lang-i="en">Brazil</span><span data-lang-i="pt">Brasil</span></span>
+          </div>
+          <div class="fact-row">
+            <span class="fact-key"><span data-lang-i="en">Education</span><span data-lang-i="pt">Formação</span></span>
+            <span class="fact-val"><span data-lang-i="en">Computer Science</span><span data-lang-i="pt">Ciência da Computação</span></span>
+          </div>
+          <div class="fact-row">
+            <span class="fact-key"><span data-lang-i="en">Focus</span><span data-lang-i="pt">Foco</span></span>
+            <span class="fact-val"><span data-lang-i="en">Frontend · Algorithms</span><span data-lang-i="pt">Frontend · Algoritmos</span></span>
+          </div>
+          <div class="fact-row">
+            <span class="fact-key">GitHub</span>
+            <span class="fact-val">
+              <a href="https://github.com/luccamoura101" target="_blank" style="text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--dim);">luccamoura101</a>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CURRENTLY -->
+  <section id="currently" style="padding-top:0;">
+    <div class="sec-header fade-up">
+      <span class="sec-tag"><span data-lang-i="en">Currently</span><span data-lang-i="pt">Atualmente</span></span>
+      <span class="sec-num">↓</span>
+    </div>
+    <div class="now-grid fade-up">
+      <div class="now-card">
+        <div class="now-card-label"><span data-lang-i="en">Building</span><span data-lang-i="pt">Construindo</span></div>
+        <div class="now-card-val">
+          <span data-lang-i="en">Side projects & this portfolio</span>
+          <span data-lang-i="pt">Projetos paralelos & este portfólio</span>
+        </div>
+      </div>
+      <div class="now-card">
+        <div class="now-card-label"><span data-lang-i="en">Studying</span><span data-lang-i="pt">Estudando</span></div>
+        <div class="now-card-val">
+          <span data-lang-i="en">Algorithms, Data Structures &amp; Web Dev</span>
+          <span data-lang-i="pt">Algoritmos, Estruturas de Dados &amp; Web Dev</span>
+        </div>
+      </div>
+      <div class="now-card">
+        <div class="now-card-label"><span data-lang-i="en">Open to</span><span data-lang-i="pt">Aberto a</span></div>
+        <div class="now-card-val">
+          <span data-lang-i="en">Collaborations, internships &amp; new ideas</span>
+          <span data-lang-i="pt">Colaborações, estágios &amp; novas ideias</span>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ── SKILLS / ACHIEVEMENTS ── -->
-  <section class="section">
-    <div class="section-left">
-      <h2 class="section-heading">
-        <span data-lang-i="en">Skills</span>
-        <span data-lang-i="pt">Habilidades</span>
-      </h2>
-      <div data-lang="en" class="section-sub">An overview of my current skillset.</div>
-      <div data-lang="pt" class="section-sub">Uma visão geral das minhas habilidades.</div>
+  <!-- SKILLS -->
+  <section id="skills" style="padding-top:120px;">
+    <div class="sec-header fade-up">
+      <span class="sec-tag"><span data-lang-i="en">Skills</span><span data-lang-i="pt">Habilidades</span></span>
+      <span class="sec-num">02</span>
     </div>
-    <div class="section-right">
-
-      <!-- Skills table -->
-      <div class="table-block cols-2" style="margin-bottom: 48px;">
-        <div class="table-header">
-          <span data-lang-i="en">Category</span>
-          <span data-lang-i="pt">Categoria</span>
-          <span data-lang-i="en" style="text-align:right">Technologies</span>
-          <span data-lang-i="pt" style="text-align:right">Tecnologias</span>
-        </div>
-        <div class="table-row">
-          <span data-lang-i="en">Languages</span>
-          <span data-lang-i="pt">Linguagens</span>
-          <span style="text-align:right; color: var(--muted); font-size:12px;">Python, HTML, CSS, JavaScript</span>
-        </div>
-        <div class="table-row">
-          <span data-lang-i="en">Concepts</span>
-          <span data-lang-i="pt">Conceitos</span>
-          <span style="text-align:right; color: var(--muted); font-size:12px;">
-            <span data-lang-i="en">Data Structures, Algorithms, OOP</span>
-            <span data-lang-i="pt">Estruturas de Dados, Algoritmos, POO</span>
-          </span>
-        </div>
-        <div class="table-row">
-          <span data-lang-i="en">Tools</span>
-          <span data-lang-i="pt">Ferramentas</span>
-          <span style="text-align:right; color: var(--muted); font-size:12px;">Git, GitHub, VS Code</span>
+    <div>
+      <div class="skill-row fade-up">
+        <span class="skill-cat"><span data-lang-i="en">Languages</span><span data-lang-i="pt">Linguagens</span></span>
+        <span class="skill-divider"></span>
+        <div class="skill-items">
+          <span class="skill-item">Python</span>
+          <span class="skill-item">HTML</span>
+          <span class="skill-item">CSS</span>
+          <span class="skill-item">JavaScript</span>
         </div>
       </div>
-
-      <!-- Education table -->
-      <div style="margin-bottom: 8px;">
-        <div style="font-size:13px; margin-bottom:16px;">
-          <span data-lang-i="en">Education</span>
-          <span data-lang-i="pt">Educação</span>
-        </div>
-        <div class="table-block cols-3">
-          <div class="table-header">
-            <span data-lang-i="en">What</span>
-            <span data-lang-i="pt">O quê</span>
-            <span data-lang-i="en">Where</span>
-            <span data-lang-i="pt">Onde</span>
-            <span style="text-align:right">
-              <span data-lang-i="en">When</span>
-              <span data-lang-i="pt">Quando</span>
-            </span>
-          </div>
-          <div class="table-row">
-            <span data-lang-i="en">Computer Science</span>
-            <span data-lang-i="pt">Ciência da Computação</span>
-            <span class="muted">
-              <span data-lang-i="en">University</span>
-              <span data-lang-i="pt">Universidade</span>
-            </span>
-            <span class="muted" style="text-align:right">2024 – Now</span>
-          </div>
+      <div class="skill-row fade-up">
+        <span class="skill-cat"><span data-lang-i="en">Concepts</span><span data-lang-i="pt">Conceitos</span></span>
+        <span class="skill-divider"></span>
+        <div class="skill-items">
+          <span class="skill-item"><span data-lang-i="en">Data Structures</span><span data-lang-i="pt">Estruturas de Dados</span></span>
+          <span class="skill-item"><span data-lang-i="en">Algorithms</span><span data-lang-i="pt">Algoritmos</span></span>
+          <span class="skill-item">OOP</span>
+          <span class="skill-item"><span data-lang-i="en">Network Theory</span><span data-lang-i="pt">Teoria de Redes</span></span>
         </div>
       </div>
-
+      <div class="skill-row fade-up">
+        <span class="skill-cat"><span data-lang-i="en">Tools</span><span data-lang-i="pt">Ferramentas</span></span>
+        <span class="skill-divider"></span>
+        <div class="skill-items">
+          <span class="skill-item">Git</span>
+          <span class="skill-item">GitHub</span>
+          <span class="skill-item">VS Code</span>
+        </div>
+      </div>
+      <div class="skill-row fade-up">
+        <span class="skill-cat"><span data-lang-i="en">Learning</span><span data-lang-i="pt">Aprendendo</span></span>
+        <span class="skill-divider"></span>
+        <div class="skill-items">
+          <span class="skill-item">React</span>
+          <span class="skill-item">Node.js</span>
+          <span class="skill-item">SQL</span>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- ── PROJECTS ── -->
-  <section id="projects" class="section">
-    <div class="section-left">
-      <h2 class="section-heading">
-        <span data-lang-i="en">Projects</span>
-        <span data-lang-i="pt">Projetos</span>
-      </h2>
-      <div data-lang="en" class="section-sub">Things I've built.</div>
-      <div data-lang="pt" class="section-sub">O que já construí.</div>
+  <!-- PROJECTS -->
+  <section id="projects" style="padding-top:120px;">
+    <div class="sec-header fade-up">
+      <span class="sec-tag"><span data-lang-i="en">Projects</span><span data-lang-i="pt">Projetos</span></span>
+      <span class="sec-num">03</span>
     </div>
-    <div class="section-right">
+    <div style="margin-top:32px;">
 
-      <div class="proj-row" onclick="window.open('https://github.com/luccamoura101','_blank')">
-        <span class="proj-num">01</span>
-        <div class="proj-info">
-          <div class="proj-name">
-            <span data-lang-i="en">Library Management System</span>
-            <span data-lang-i="pt">Sistema de Gerenciamento de Biblioteca</span>
-          </div>
-          <div data-lang="en" class="proj-desc">
-            Comprehensive library system with modern UI, book cataloging,
-            user management and lending operations.
-          </div>
-          <div data-lang="pt" class="proj-desc">
-            Sistema de biblioteca completo com interface moderna, catalogação
-            de livros, gestão de usuários e operações de empréstimo.
-          </div>
+      <div class="proj-card fade-up" onclick="window.open('https://github.com/luccamoura101','_blank')">
+        <span class="proj-card-num">01</span>
+        <div class="proj-card-top">
+          <div class="proj-card-title"><span data-lang-i="en">Library Management System</span><span data-lang-i="pt">Sistema de Gerenciamento de Biblioteca</span></div>
+          <div class="proj-card-meta"><span class="proj-card-year">2024</span><span class="proj-card-arrow">↗</span></div>
+        </div>
+        <div data-lang="en" class="proj-card-desc">Comprehensive library system with book cataloging, user management, and lending operations — built with efficient data structures and algorithms.</div>
+        <div data-lang="pt" class="proj-card-desc">Sistema de biblioteca completo com catalogação de livros, gestão de usuários e operações de empréstimo — construído com estruturas de dados eficientes.</div>
+        <div class="proj-card-footer">
           <div class="proj-tags">
             <span class="proj-tag">Python</span>
-            <span class="proj-tag">
-              <span data-lang-i="en">Data Structures</span>
-              <span data-lang-i="pt">Estruturas de Dados</span>
-            </span>
-            <span class="proj-tag">
-              <span data-lang-i="en">Algorithms</span>
-              <span data-lang-i="pt">Algoritmos</span>
-            </span>
+            <span class="proj-tag"><span data-lang-i="en">Data Structures</span><span data-lang-i="pt">Estruturas de Dados</span></span>
+            <span class="proj-tag"><span data-lang-i="en">Algorithms</span><span data-lang-i="pt">Algoritmos</span></span>
           </div>
+          <span class="proj-card-link">GitHub ↗</span>
         </div>
       </div>
 
-      <div class="proj-row" onclick="window.open('https://github.com/luccamoura101','_blank')">
-        <span class="proj-num">02</span>
-        <div class="proj-info">
-          <div class="proj-name">
-            <span data-lang-i="en">Vaccination Game</span>
-            <span data-lang-i="pt">Jogo de Vacinação</span>
-          </div>
-          <div data-lang="en" class="proj-desc">
-            Interactive SIR-Vax-Network simulation modeling disease spread
-            and vaccination strategies through network theory and game mechanics.
-          </div>
-          <div data-lang="pt" class="proj-desc">
-            Simulação interativa SIR-Vax-Network modelando propagação de doenças
-            e estratégias de vacinação via teoria de redes e mecânicas de jogo.
-          </div>
+      <div class="proj-card fade-up" onclick="window.open('https://github.com/luccamoura101','_blank')">
+        <span class="proj-card-num">02</span>
+        <div class="proj-card-top">
+          <div class="proj-card-title"><span data-lang-i="en">Vaccination Game</span><span data-lang-i="pt">Jogo de Vacinação</span></div>
+          <div class="proj-card-meta"><span class="proj-card-year">2024</span><span class="proj-card-arrow">↗</span></div>
+        </div>
+        <div data-lang="en" class="proj-card-desc">SIR-Vax-Network simulation — models disease spread and vaccination strategies through network theory and interactive game mechanics.</div>
+        <div data-lang="pt" class="proj-card-desc">Simulação SIR-Vax-Network — modela propagação de doenças e estratégias de vacinação via teoria de redes e mecânicas de jogo interativas.</div>
+        <div class="proj-card-footer">
           <div class="proj-tags">
             <span class="proj-tag">Python</span>
-            <span class="proj-tag">
-              <span data-lang-i="en">Network Theory</span>
-              <span data-lang-i="pt">Teoria de Redes</span>
-            </span>
-            <span class="proj-tag">
-              <span data-lang-i="en">Simulation</span>
-              <span data-lang-i="pt">Simulação</span>
-            </span>
+            <span class="proj-tag"><span data-lang-i="en">Network Theory</span><span data-lang-i="pt">Teoria de Redes</span></span>
+            <span class="proj-tag"><span data-lang-i="en">Simulation</span><span data-lang-i="pt">Simulação</span></span>
           </div>
+          <span class="proj-card-link">GitHub ↗</span>
         </div>
       </div>
 
-      <div class="proj-row" onclick="window.open('https://github.com/luccamoura101','_blank')">
-        <span class="proj-num">03</span>
-        <div class="proj-info">
-          <div class="proj-name">
-            <span data-lang-i="en">Minesweeper</span>
-            <span data-lang-i="pt">Campo Minado</span>
-          </div>
-          <div data-lang="en" class="proj-desc">
-            Classic Minesweeper remake with modern graphics, multiple difficulty
-            levels, custom board sizes, and an intuitive visual interface.
-          </div>
-          <div data-lang="pt" class="proj-desc">
-            Remake clássico do Campo Minado com gráficos modernos, múltiplos
-            níveis de dificuldade, tamanhos personalizáveis e interface intuitiva.
-          </div>
+      <div class="proj-card fade-up" onclick="window.open('https://github.com/luccamoura101','_blank')">
+        <span class="proj-card-num">03</span>
+        <div class="proj-card-top">
+          <div class="proj-card-title"><span data-lang-i="en">Minesweeper</span><span data-lang-i="pt">Campo Minado</span></div>
+          <div class="proj-card-meta"><span class="proj-card-year">2024</span><span class="proj-card-arrow">↗</span></div>
+        </div>
+        <div data-lang="en" class="proj-card-desc">Classic Minesweeper rebuilt from scratch — modern graphics, multiple difficulty levels, custom board sizes, and a smooth visual interface.</div>
+        <div data-lang="pt" class="proj-card-desc">Campo Minado clássico reconstruído do zero — gráficos modernos, múltiplos níveis de dificuldade, tamanhos personalizáveis e interface fluida.</div>
+        <div class="proj-card-footer">
           <div class="proj-tags">
             <span class="proj-tag">Python</span>
-            <span class="proj-tag">
-              <span data-lang-i="en">Game Logic</span>
-              <span data-lang-i="pt">Lógica de Jogo</span>
-            </span>
+            <span class="proj-tag"><span data-lang-i="en">Game Logic</span><span data-lang-i="pt">Lógica de Jogo</span></span>
             <span class="proj-tag">UI/UX</span>
           </div>
+          <span class="proj-card-link">GitHub ↗</span>
         </div>
       </div>
 
     </div>
   </section>
 
-  <!-- ── CONTACT ── -->
-  <section id="contact" class="section">
-    <div class="section-left">
-      <h2 class="section-heading">
-        <span data-lang-i="en">Contact</span>
-        <span data-lang-i="pt">Contato</span>
-      </h2>
-      <div data-lang="en" class="section-sub">
-        Want to work together? Anything else? Feel free to reach out.
-      </div>
-      <div data-lang="pt" class="section-sub">
-        Quer trabalhar junto? Alguma outra coisa? Sinta-se à vontade para entrar em contato.
-      </div>
+  <!-- CONTACT -->
+  <section id="contact" style="padding-top:120px;">
+    <div class="sec-header fade-up">
+      <span class="sec-tag"><span data-lang-i="en">Contact</span><span data-lang-i="pt">Contato</span></span>
+      <span class="sec-num">04</span>
     </div>
-    <div class="section-right">
-
+    <div class="contact-inner fade-up">
+      <div data-lang="en" class="contact-intro">Want to work together? Have a project in mind, or just want to say hi? Feel free to reach out — I usually respond within a day.</div>
+      <div data-lang="pt" class="contact-intro">Quer trabalhar junto? Tem um projeto em mente, ou só quer dizer oi? Sinta-se à vontade — costumo responder em até um dia.</div>
       <div class="contact-email-label">Email</div>
-      <div class="contact-email-addr">
-        <a href="mailto:luccamoura101@gmail.com">luccamoura101@gmail.com</a>
-      </div>
+      <div class="contact-email-addr"><a href="mailto:luccamoura101@gmail.com">luccamoura101@gmail.com</a></div>
       <div class="contact-actions">
-        <button class="bracket-btn" onclick="copyEmail()">
-          [ <span data-lang-i="en">Copy Email</span><span data-lang-i="pt">Copiar Email</span> ]
+        <button class="link-arrow" onclick="copyEmail()">
+          <span data-lang-i="en">Copy Email</span><span data-lang-i="pt">Copiar Email</span>
+          <span class="arr">↗</span>
         </button>
-        <button class="bracket-btn">
-          <a href="mailto:luccamoura101@gmail.com">
-            [ <span data-lang-i="en">Open in Email Client</span><span data-lang-i="pt">Abrir no Email</span> ]
-          </a>
-        </button>
+        <a class="link-arrow" href="mailto:luccamoura101@gmail.com">
+          <span data-lang-i="en">Open in Mail</span><span data-lang-i="pt">Abrir no Email</span>
+          <span class="arr">↗</span>
+        </a>
       </div>
-
-      <div class="contact-social">
+      <div>
         <a href="https://github.com/luccamoura101" target="_blank">
           <div class="social-row">
             <span class="social-name">GitHub</span>
-            <span class="social-handle">github.com/luccamoura101</span>
+            <span class="social-handle">github.com/luccamoura101 <span class="arr">↗</span></span>
           </div>
         </a>
         <a href="https://instagram.com/lucca_mourarantes" target="_blank">
           <div class="social-row">
             <span class="social-name">Instagram</span>
-            <span class="social-handle">@lucca_mourarantes</span>
+            <span class="social-handle">@lucca_mourarantes <span class="arr">↗</span></span>
           </div>
         </a>
       </div>
-
     </div>
   </section>
 
 </main>
 
 <footer>
-  <span>© 2025 Lucca</span>
-  <span id="copy-toast" style="opacity:0; transition: opacity .3s; color: var(--muted);">
-    <span data-lang-i="en">Email copied!</span>
-    <span data-lang-i="pt">Email copiado!</span>
-  </span>
-  <span style="color: var(--muted);">
-    <span data-lang-i="en">Computer Science Student</span>
-    <span data-lang-i="pt">Estudante de Ciência da Computação</span>
-  </span>
+  <p class="footer-quote">
+    <span data-lang-i="en">"Every project is a chance to learn something new."</span>
+    <span data-lang-i="pt">"Cada projeto é uma chance de aprender algo novo."</span>
+  </p>
+  <div class="footer-meta">
+    <span>© <span id="yr"></span> Lucca</span>
+    <span><span data-lang-i="en">Made with care</span><span data-lang-i="pt">Feito com cuidado</span></span>
+    <span><span data-lang-i="en">Computer Science Student</span><span data-lang-i="pt">Estudante de CC</span></span>
+  </div>
 </footer>
 
-<script>
-  let lang = 'en';
+<div id="toast">
+  <span data-lang-i="en">Email copied!</span>
+  <span data-lang-i="pt">Email copiado!</span>
+</div>
 
+<script>
+  // ── Year
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  // ── Custom cursor
+  const cursor = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top  = e.clientY + 'px';
+  });
+  document.querySelectorAll('a, button, .proj-card, .skill-row, .fact-row, .now-card').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('big'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('big'));
+  });
+
+  // ── Language
   function setLang(l, btn) {
-    lang = l;
     document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     document.querySelectorAll('[data-lang]').forEach(el => {
@@ -832,23 +865,53 @@
     });
   }
 
+  // ── Copy email
   function copyEmail() {
     navigator.clipboard.writeText('luccamoura101@gmail.com').then(() => {
-      const toast = document.getElementById('copy-toast');
-      toast.style.opacity = '1';
-      setTimeout(() => { toast.style.opacity = '0'; }, 2000);
+      const t = document.getElementById('toast');
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2200);
     });
   }
 
-  // Smooth scroll for nav links
+  // ── Smooth scroll
   document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener('click', e => {
-      const target = document.querySelector(a.getAttribute('href'));
-      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+      const el = document.querySelector(a.getAttribute('href'));
+      if (el) { e.preventDefault(); el.scrollIntoView({ behavior: 'smooth' }); }
     });
   });
 
-  // Init language display
+  // ── Scroll fade-up
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // ── Active nav on scroll
+  const sections = ['about','currently','skills','projects','contact'];
+  const navLinks = document.querySelectorAll('.nav-sub[data-section]');
+  const scrollObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const id = e.target.id;
+        navLinks.forEach(a => {
+          a.classList.toggle('is-active', a.dataset.section === id);
+        });
+      }
+    });
+  }, { threshold: 0.3 });
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) scrollObserver.observe(el);
+  });
+
+  // ── Init lang
   setLang('en', document.querySelector('.lang-btn.active'));
 </script>
 </body>
